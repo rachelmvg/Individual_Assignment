@@ -25,8 +25,21 @@ conflicts_grouped <- conflicts %>%
 conflicts_grouped_types <- conflicts_grouped %>%
 summarise(average_types = mean(deaths))
 ```
+```{r}
+#change violence types
+conflicts_grouped_better <- conflicts_grouped_types %>%
+  mutate(
+    type_of_violence = ifelse(type_of_violence==1, 'state_based', type_of_violence),
+    type_of_violence = ifelse(type_of_violence==2, 'non-state', type_of_violence),
+    type_of_violence = ifelse(type_of_violence==3, 'one-sided', type_of_violence)
+  )
+```
 
 ```{r}
 #plotting mean deaths per violence type 
 ggplot(data = conflicts_grouped_types) + geom_col(mapping = aes(x = type_of_violence, y = average_types)) + xlab("violence type") + ylab("average amount of deaths") + ggtitle("Average amount of deaths per violence type")
+```
+
+```{r}
+ggsave("plot.jpg")
 ```
