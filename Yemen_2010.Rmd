@@ -1,0 +1,46 @@
+---
+title: "R Notebook"
+output: Deaths in Yemen in 2010 per violence type
+---
+
+```{r}
+#loading the tidyverse
+library('tidyverse')
+```
+
+
+```{r}
+#loading the file
+conflicts_2010 <- read.csv('Yemen_2010.csv')
+```
+
+```{r}
+#group conflicts by type of violence
+conflicts_grouped_2010 <- conflicts_2010 %>%
+  group_by(type_of_violence)
+```
+
+```{r}
+#find the mean per violence type
+conflicts_grouped_types_2010 <- conflicts_grouped_2010 %>%
+summarise(average_types = mean(deaths))
+```
+
+```{r}
+#change violence types
+conflicts_grouped_better_2010 <- conflicts_grouped_types_2010 %>%
+  mutate(
+    type_of_violence = ifelse(type_of_violence==1, 'state_based', type_of_violence),
+    type_of_violence = ifelse(type_of_violence==2, 'non-state', type_of_violence),
+    type_of_violence = ifelse(type_of_violence==3, 'one-sided', type_of_violence)
+  )
+```
+
+```{r}
+#plotting mean deaths per violence type 
+ggplot(data = conflicts_grouped_better_2010) + geom_col(mapping = aes(x = type_of_violence, y = average_types)) + xlab("violence type") + ylab("average amount of deaths") + ggtitle("Average amount of deaths per violence type in 2010")
+```
+
+```{r}
+ggsave("plot_2010.jpg")
+```
